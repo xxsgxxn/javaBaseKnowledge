@@ -1,6 +1,8 @@
 package Jzoffer;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class findNumberInArr {
     /*找出数组中出现次数超一半的数字，并
@@ -115,6 +117,7 @@ public class findNumberInArr {
         return a[k];
     }
 
+
     public ArrayList<Integer> findMinKNum1(int[] a,int k)
     {
         ArrayList<Integer> res = new ArrayList<>();
@@ -128,6 +131,45 @@ public class findNumberInArr {
             res.add(a[i]);
         }
 
+        return res;
+    }
+
+
+    /*下沉*/
+    private void  sink(int[] arr,int k,int N)//
+    {
+        while (2*k <= N)
+        {
+            int j = 2 * k;
+            if (j<N&&arr[j-1] > arr[j]) j++;
+            if (arr[k-1] < arr[j-1]) break;
+            int temp = arr[k-1];
+            arr[j-1] = temp;
+            arr[k-1] = arr[j-1];
+            k = j;
+        }
+    }
+    public ArrayList<Integer> findMinKth2(int[]a,int k)
+    {
+        int N = a.length;
+        ArrayList<Integer> res = new ArrayList<>();
+        if (a == null || k <= 0)
+        {
+            return res;
+        }
+        for (int i = N/2;i >= 1;i++)//构造小顶堆
+        {
+            sink(a,i,N);
+        }
+        for (int i = 0;i < k;i++)
+        {
+            res.add(a[0]);
+            int temp = a[0];
+            a[0] = a[N-1];
+            a[N-1] = temp;
+            N--;
+            sink(a,1,N);
+        }
         return res;
     }
 
@@ -158,5 +200,69 @@ public class findNumberInArr {
         }
         return res;
     }
+
+    /*基于最大堆的优先序列，一旦堆中元素超过k个 就剔除里面最大的，最后遍历完全部元素，剩下的就是最小的K个*/
+    public ArrayList<Integer> findKthMin4(int[] a,int k)
+    {
+        ArrayList<Integer> res = new ArrayList<>();
+        if (a == null || a.length < k || a.length == 0 || k <= 0)
+        {
+            return res;
+        }
+        PriorityQueue<Integer> q = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int i = 0;i < a.length;i++)
+        {
+            q.add(a[i]);
+            if (q.size() > k)
+            {
+                q.poll();
+            }
+        }
+        res.addAll(q);
+        return res;
+    }
+
+    /*连续子数组的最大和
+    * 当前和小于零，就该重新计算当前和了*/
+    public int SumSubArr(int[] a)
+    {
+        if (a == null || a.length == 0)
+        {
+            return 0;
+        }
+        int curSum = 0;
+        int maxSum = 0;
+        for (int i=0;i<a.length;i++)
+        {
+            if (curSum +a[i] < a[i]){
+                curSum = a[i];
+            }else{
+                curSum += a[i];
+            }
+            if (maxSum < curSum)
+            {
+                maxSum = curSum;
+            }
+        }
+        return maxSum;
+    }
+
+    public int SumSubArrdfs(int[] Arr)
+    {
+        if (Arr== null || Arr.length == 0)
+        {
+            return 0;
+        }
+        int curSum = 0;
+        int maxSum = 0;
+        for (int i = 0;i < Arr.length;i++)
+        {
+            curSum = Math.max(curSum+Arr[i],Arr[i]);
+            maxSum = Math.max(curSum,maxSum);
+        }
+        return maxSum;
+    }
+
+
 
 }

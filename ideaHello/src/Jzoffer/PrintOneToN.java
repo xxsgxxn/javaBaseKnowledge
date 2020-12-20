@@ -101,4 +101,75 @@ public class PrintOneToN {
 
         printN(n);
     }
+
+    /*统计1~n中1出现的个数
+    * 法1：计算每个数字中1的个数，然后相加
+    * 法2：用StringBuilder拼接每个数字，然后计算其中1的个数
+    * 法3：固定1的位，计算每种情况*/
+    private int countOne(int n)
+    {
+        int count = 0;
+        while (n != 0)
+        {
+            if (n % 10 == 1)
+            {
+                count += 1;
+            }
+            n = n/10;
+        }
+        return count;
+    }
+
+    public int countOne1(int n)
+    {
+        int count = 0;
+        for (int i=1;i<=n;i++)
+        {
+            count += countOne(i);
+        }
+        return count;
+    }
+
+    public int countOne2(int n)
+    {
+        int count=0;
+        if (n<0) n = Math.abs(n);
+        StringBuilder s = new StringBuilder();
+        for (int i=1;i<=n;i++)
+        {
+            s.append(i);
+        }
+        for (int i=0;i<s.length();i++)
+        {
+            if (s.charAt(i) == '1') {
+                count++;
+
+            }
+        }
+        return count;
+    }
+
+    public int countOne3(int n)
+    {
+        int ones = 0;
+        for (int m = 1;m<=n;m=m*10)
+        {
+            int a = n/m;
+            int b = n%m;
+            if (a%10 ==0){
+                ones += (a/10)*m;
+            }else if(a%10 == 1)
+            {
+                ones += (a/10)*m + (b+1);
+            }else{
+                ones += (a/10 + 1) * m;
+            }
+        }
+        return ones;
+    }
+
+
+
+    
+
 }
